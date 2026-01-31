@@ -63,20 +63,25 @@ Only **pre-departure features** were used.
 |------|--------|
 | Logistic Regression | Interpretable baseline |
 | Random Forest | Non-linear performance model |
+| LightGBM | Outperformed Random Forest
 
-#### 📏 Evaluation Metric
+#### 📏 Evaluation 
 - **ROC-AUC** (chosen due to class imbalance)
 
 ---
 
 ## 📈 Results
+| Model            | ROC-AUC |
+|------------------|--------:|
+| Logistic Regression | 0.69 |
+| Random Forest    | 0.85 |
+| LightGBM         | **0.878** |
 
-| Model | ROC-AUC |
-|------|---------|
-| Logistic Regression | ~0.69 |
-| Random Forest | **~0.85** |
 
 ✔ Random Forest significantly outperformed the baseline  
+
+✔ LightGBM out-performed Random Forest with better score
+
 ✔ High performance achieved **without data leakage**
 
 ---
@@ -104,7 +109,37 @@ This makes ROC-AUC well-suited for this problem because:
 - It remains **robust under class imbalance**
 - It evaluates **ranking quality**, not just final class labels
 
-### Business Interpretation
+## Threshold Analysis & Tradeoffs (on Random Forest )
+
+While the Random Forest model achieved a ROC-AUC score of 0.85, we performed **threshold analysis** to make the predictions more actionable in real-world scenarios.
+
+By testing multiple probability thresholds, I observed how **Precision**, **Recall**, and **F1-score** change:
+
+| Threshold | Precision | Recall  | F1-score |
+|-----------|-----------|---------|----------|
+| 0.3       | 0.23      | 0.95    | 0.37     |
+| 0.5       | 0.52      | 0.70    | 0.60     |
+| 0.7       | 0.91      | 0.36    | 0.51     |
+
+### Key Insight
+- **Threshold = 0.7** was found to be the most reliable for predicting flight delays.
+- At this threshold, the model predicts a flight as delayed **only when highly confident**, resulting in:
+  - **High Precision (0.91)** → very few false alarms; flights flagged as delayed are almost always actually delayed.
+  - **Lower Recall (0.36)** → some real delays may be missed, but this ensures operational reliability.
+
+### Tradeoff Between Precision & Recall (Just for Referencing)
+- **Precision** measures how many of the flights predicted as delayed were actually delayed.
+- **Recall** measures how many of the actual delayed flights were correctly identified.
+- Increasing the threshold improves **Precision** but decreases **Recall**.
+- Conversely, lowering the threshold improves **Recall** but reduces **Precision**.
+- Selecting a threshold depends on business priorities:  
+  - Airlines may prefer **higher Precision** to avoid unnecessary disruption alerts.  
+  - Air traffic analysts may prefer **higher Recall** to catch as many delays as possible.
+
+By explicitly selecting a threshold and understanding these tradeoffs, the model becomes **practical for real-world use**, not just a numerical benchmark.
+
+
+### Business Interpretation (As per my Research)
 In real-world airline operations, decisions are based on **relative delay risk**, not a fixed probability cutoff.  
 A higher ROC-AUC indicates that the model can consistently assign higher risk scores to flights that are more likely to be delayed, enabling risk-based planning and early interventions.
 
@@ -114,7 +149,34 @@ ROC-AUC was selected as the primary evaluation metric because it provides a **re
 ## 📌 Key Insights
 - Flight delays are strongly influenced by **system-level congestion**
 - Tree-based models capture non-linear effects missed by linear models
-- Proper feature engineering is more impactful than trying many models
+
+## Feature Selection & Model Simplification
+
+After training the baseline Random Forest model, we analyzed **feature importance** to understand which variables contributed meaningfully to flight delay prediction.
+
+### Approach
+- Extracted feature importances from the trained Random Forest model.
+- Identified features with **very low importance** (near-zero contribution).
+- Removed these low-impact features to reduce model complexity.
+- Retrained the model using only the most informative features.
+
+### Results
+| Model            | ROC-AUC |
+|------------------|--------:|
+| Logistic Regression | 0.69 |
+| Random Forest    | 0.85 |
+| LightGBM         | **0.878** |
+
+### Key Insight
+- Removing low-importance features resulted in **minimal performance drop** (0.85 → 0.845).
+- This indicates that the model was relying primarily on a **small, strong subset of features**.
+- The reduced model is:
+  - Easier to interpret  
+  - Faster to train  
+  - Less prone to noise and overfitting  
+
+
+
 
 ---
 
@@ -129,7 +191,6 @@ ROC-AUC was selected as the primary evaluation metric because it provides a **re
 ---
 
 ## 🔮 Future Improvements that I have planned
-- Incorporate weather data available at scheduling time
 - Experiment with gradient boosting (XGBoost / LightGBM)
 - Deploy as a simple API for real-time prediction
 
