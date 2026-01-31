@@ -1,0 +1,41 @@
+Day 1 – Exploratory Data Analysis (EDA)
+
+Objective:
+	Understand the structure, quality, and patterns in the U.S. Flight Delay & Cancellation dataset before modeling, and define a 	leakage-safe prediction setup.
+
+Work done:
+
+	Loaded and worked with a large, real-world flight dataset (~1.5M sampled rows)
+
+	Inspected schema, data types, and column meanings to distinguish:
+
+	scheduled vs actual flight information
+
+	Defined the prediction problem clearly:
+
+	Predict whether a flight will be delayed (>15 min) using only information available before departure
+
+	Identified noisy and sparse columns (e.g., delay reason fields with heavy nulls)
+
+
+Analyzed time-based patterns:
+
+	Month
+
+	Day of week
+
+	Scheduled departure hour
+
+	Explored route-level and airline-level distributions
+
+	Checked class balance for delayed vs non-delayed flights
+
+	Derived initial insights to guide feature engineering (time features, frequency patterns)
+
+Outcome:
+
+	Strong understanding of dataset behavior and real-world constraints
+
+	Clear separation between exploratory insights and modeling decisions
+
+	Solid foundation for feature engineering on Day 2
