@@ -39,3 +39,266 @@ Outcome:
 	Clear separation between exploratory insights and modeling decisions
 
 	Solid foundation for feature engineering on Day 2
+
+
+
+Day 2 Progress Update – Flight Delay Prediction Project
+
+Objective
+---------
+The objective of Day 2 was to complete the first stable version of the project by
+building a baseline model and improving it using a non-linear algorithm. The focus
+was on establishing correct evaluation methodology and understanding the modeling
+limitations before moving to advanced techniques.
+
+Work Completed
+--------------
+
+1. Baseline Model: Logistic Regression
+-------------------------------------
+A Logistic Regression model was implemented as the baseline.
+
+Purpose:
+- Serve as a simple, interpretable reference model
+- Understand whether the problem is linearly separable
+
+Evaluation:
+- Used ROC-AUC as the primary metric due to class imbalance
+- Evaluated using predicted probabilities, not hard labels
+
+Result:
+- ROC-AUC ≈ 0.69
+
+Key Insight:
+- Performance indicated that flight delays are not linearly separable
+- Confirmed the need for non-linear models
+
+------------------------------------------------------------
+
+2. Improved Model: Random Forest (Initial Version)
+--------------------------------------------------
+A Random Forest classifier was trained to capture non-linear relationships between
+features.
+
+Key Decisions:
+- Used probability outputs (predict_proba) for evaluation
+- Avoided any post-departure features to prevent data leakage
+
+Evaluation:
+- Metric: ROC-AUC
+
+Result:
+- ROC-AUC ≈ 0.85
+
+Key Insight:
+- Significant improvement over Logistic Regression
+- Demonstrated that ensemble tree-based models are better suited for this problem
+- Established Random Forest as a strong baseline model
+
+------------------------------------------------------------
+
+Key Learnings from Day 2
+-----------------------
+- Baseline models provide essential context, not final performance
+- ROC-AUC is more reliable than accuracy for imbalanced classification problems
+- Evaluating probability outputs is critical for meaningful model assessment
+- Non-linear models significantly outperform linear approaches for flight delay prediction
+
+------------------------------------------------------------
+
+Outcome
+-------
+By the end of Day 2:
+- The first complete version of the project was achieved
+- A strong baseline (Logistic Regression) and improved model (Random Forest) were trained
+- Evaluation strategy was validated and standardized
+- The project was ready for deeper analysis and refinement
+
+------------------------------------------------------------
+
+Next Steps (Planned for Day 3)
+------------------------------
+- Perform threshold analysis on Random Forest predictions
+- Analyze feature importance and train a feature-selected Random Forest
+- Introduce gradient boosting (LightGBM) for further performance gains
+
+------------------------------------------------------------------------------------------------------------------
+
+Day 3 Progress Update – Flight Delay Prediction Project
+
+Objective
+---------
+The objective of Day 3 was to move beyond baseline modeling by improving model
+decision quality and robustness. The focus was on making predictions actionable
+through threshold analysis, simplifying the Random Forest model using feature
+importance, and introducing a more powerful gradient boosting model.
+
+Work Completed
+--------------
+
+1. Threshold Analysis on Random Forest
+-------------------------------------
+Although the Random Forest model achieved strong ROC-AUC performance, its default
+classification threshold (0.5) was not assumed to be optimal for real-world use.
+
+Approach:
+- Used predicted probabilities from the Random Forest model
+- Evaluated model performance at multiple thresholds (0.3, 0.5, 0.7)
+- Compared Precision, Recall, and F1-score across thresholds
+
+Observations:
+- Lower thresholds resulted in high recall but very low precision
+- Higher thresholds significantly improved precision at the cost of recall
+
+Key Insight:
+- A threshold of 0.7 produced high-confidence delay predictions
+- This makes the model suitable for operational scenarios where false delay alerts
+  are costly
+
+------------------------------------------------------------
+
+2. Feature Selection Using Random Forest Importance
+---------------------------------------------------
+To assess model robustness and reduce complexity, feature importance from the
+Random Forest model was analyzed.
+
+Approach:
+- Extracted feature importance scores from the trained Random Forest
+- Identified features with near-zero contribution
+- Removed low-importance features
+- Retrained the Random Forest model using the reduced feature set
+
+Result:
+- ROC-AUC dropped marginally from approximately 0.85 to 0.845
+
+Key Insight:
+- The small performance drop indicates that the model relies on a compact set of
+  informative features
+- Feature pruning improved interpretability and training efficiency without
+  significantly harming performance
+
+------------------------------------------------------------
+
+3. Gradient Boosting Model: LightGBM
+-----------------------------------
+To further improve performance, a LightGBM classifier was introduced.
+
+Rationale:
+- Gradient boosting models are well-suited for large tabular datasets
+- They handle non-linear interactions and feature redundancy effectively
+
+Implementation:
+- Trained LightGBM using the same leakage-free feature set
+- Evaluated using ROC-AUC for fair comparison with previous models
+- Applied the previously selected probability threshold (0.7) for classification
+
+Result:
+- ROC-AUC ≈ 0.878
+
+Key Insight:
+- LightGBM outperformed Random Forest while maintaining high precision
+- Demonstrated superior ranking ability on delayed flights
+- Confirmed that boosting methods are the best fit for this problem
+
+------------------------------------------------------------
+
+Key Learnings from Day 3
+-----------------------
+- ROC-AUC evaluates ranking quality, but threshold selection determines practical use
+- Threshold tuning is a decision policy, not a model hyperparameter
+- Feature selection can simplify models without major performance loss
+- Gradient boosting provides consistent gains on large, structured datasets
+
+------------------------------------------------------------
+
+Outcome
+-------
+By the end of Day 3:
+- Random Forest predictions were made operational through threshold analysis
+- Model robustness was validated via feature selection
+- LightGBM was established as the best-performing model
+- The project reached a polished, portfolio-ready state
+
+------------------------------------------------------------
+
+Next Steps
+----------
+- Finalize documentation and README polishing
+- Push all updates to GitHub
+- Prepare the project for presentation and interviews
+
+
+Day 4 Progress Update – Flight Delay Prediction Project (Final Day)
+
+Objective
+---------
+The objective of Day 4 was to finalize the project by improving documentation,
+cleaning up the repository, and ensuring proper version control. The focus was on
+making the project presentation-ready, reproducible, and easy for reviewers to
+understand.
+
+Work Completed
+--------------
+
+1. Documentation and README Finalization
+----------------------------------------
+- Reviewed and refined the project README for clarity and structure
+- Clearly documented:
+  - Problem statement and real-world relevance
+  - Dataset characteristics and class imbalance
+  - Modeling strategy and evaluation methodology
+  - Justification for using ROC-AUC
+  - Threshold analysis and business interpretation
+- Ensured the README is concise, well-structured, and recruiter-friendly
+
+Key Outcome:
+- The README now provides a complete narrative of the project without requiring
+  readers to inspect notebooks in detail
+
+------------------------------------------------------------
+
+2. Experiment Organization and Cleanup
+--------------------------------------
+- Separated exploratory and experimental work into `Experiments.ipynb`
+- Kept the main modeling workflow clean and readable in `modelling.ipynb`
+- Removed clutter and ensured notebooks reflect the final, correct approach
+
+Key Outcome:
+- Clear separation between final results and exploratory experiments
+- Improved readability and maintainability of notebooks
+
+------------------------------------------------------------
+
+4. Final Project Polish
+-----------------------
+- Verified that all results in the README match notebook outputs
+- Ensured consistent evaluation methodology across models
+- Confirmed that no data leakage exists in feature usage
+- Validated that all files required to understand the project are present
+
+------------------------------------------------------------
+
+Key Learnings from Day 4
+-----------------------
+- Clear documentation is as important as model performance
+- A well-organized repository significantly improves project credibility
+- Polishing and presentation turn a project into a portfolio asset
+
+------------------------------------------------------------
+
+Final Outcome
+-------------
+By the end of Day 4:
+- The project was fully completed and polished
+- Documentation clearly communicates technical and business reasoning
+- The repository is clean, reproducible, and professional
+- The project is ready for:
+  - Resume inclusion
+  - Recruiter review
+  - Technical interviews
+
+------------------------------------------------------------
+
+Project Status
+--------------
+Completed.
