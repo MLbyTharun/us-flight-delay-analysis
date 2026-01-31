@@ -1,3 +1,0 @@
-Day 1:
-     Loaded dataset, checked columns, missing values, and defined target.
-Day 1: Loaded dataset, checked columns, missing values, and defined target.
